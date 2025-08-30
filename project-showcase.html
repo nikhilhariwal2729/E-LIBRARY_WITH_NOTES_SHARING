@@ -304,7 +304,6 @@
 
         /* Footer */
         .footer {
-            text-align: center;
             color: #4a5568;
             padding: 30px;
             background: white;
@@ -312,25 +311,62 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
 
-        .footer-text {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-        }
-
-        .social-links {
+        .footer-content {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: flex-start;
             gap: 20px;
         }
 
-        .social-link {
-            color: #667eea;
-            font-size: 1.5rem;
-            transition: transform 0.3s ease;
+        .footer-left p {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #718096;
         }
 
-        .social-link:hover {
-            transform: scale(1.2);
+        .footer-left p:first-child {
+            font-size: 1rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .footer-right {
+            text-align: right;
+        }
+
+        .footer-right p {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #4a5568;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .github-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .github-icon {
+            font-size: 1.1rem;
         }
 
         /* Responsive Design */
@@ -357,6 +393,16 @@
             .cta-buttons {
                 flex-direction: column;
                 align-items: center;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .footer-right {
+                text-align: center;
             }
         }
     </style>
@@ -511,22 +557,21 @@
             </p>
             <div class="cta-buttons">
                 <a href="#" class="cta-btn">📖 View Documentation</a>
-                <a href="#" class="cta-btn">💻 Source Code</a>
+                <a href="https://github.com/AnshulTikariha/e-library-and-notes-sharing" target="_blank" class="cta-btn">💻 Source Code</a>
                 <a href="#" class="cta-btn">🎥 Watch Demo</a>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            <p class="footer-text">Built with ❤️ for the educational community</p>
-            <p style="color: #718096; font-size: 0.9rem; margin-bottom: 15px;">
-                A comprehensive solution for modern educational resource management
-            </p>
-            <div class="social-links">
-                <a href="#" class="social-link">📧</a>
-                <a href="#" class="social-link">🐙</a>
-                <a href="#" class="social-link">🐦</a>
-                <a href="#" class="social-link">💼</a>
+            <div class="footer-content">
+                <div class="footer-left">
+                    <p>© 2025 Developer Viewpoint. All rights reserved.</p>
+                    <p>Free source code available on GitHub (MIT Licensed).</p>
+                </div>
+                <div class="footer-right">
+                    <p>Developed by <span class="font-semibold">Anshul</span>.</p>
+                </div>
             </div>
         </div>
     </div>
