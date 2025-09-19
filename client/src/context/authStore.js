@@ -6,19 +6,42 @@ const useAuth = create((set, get) => ({
   user: null,
   token: Cookies.get('token') || null,
   loading: false,
+  initialized: false,
   
   // Initialize auth state
   init: async () => {
-    const token = Cookies.get('token');
+    // Try to get token from cookie
+    let token = Cookies.get('token');
+    console.log('Initializing auth with token:', token ? 'exists' : 'none');
+    
+    // If no token in cookie, try to get from localStorage as fallback
+    if (!token) {
+      token = localStorage.getItem('token');
+      if (token) {
+        console.log('Found token in localStorage, setting cookie');
+        Cookies.set('token', token, { expires: 7 });
+      }
+    }
+    
     if (token) {
+      set({ loading: true });
       try {
         const { data } = await api.get('/auth/me');
-        set({ user: data, token });
+        console.log('Auth init successful, user:', data);
+        // Store in both cookie and localStorage for redundancy
+        Cookies.set('token', token, { expires: 7 });
+        localStorage.setItem('token', token);
+        set({ user: data, token, loading: false, initialized: true });
       } catch (error) {
-        // Token is invalid, remove it
+        console.log('Auth init failed:', error.response?.status, error.message);
+        // Token is invalid, remove it from both places
         Cookies.remove('token');
-        set({ user: null, token: null });
+        localStorage.removeItem('token');
+        set({ user: null, token: null, loading: false, initialized: true });
       }
+    } else {
+      console.log('No token found, setting initialized to true');
+      set({ initialized: true });
     }
   },
 
@@ -26,9 +49,13 @@ const useAuth = create((set, get) => ({
     set({ loading: true });
     try {
       const { data } = await api.post('/auth/login', { email, password });
+      console.log('Login successful, data:', data);
       
-      // Store token in cookie
+      // Store token in both cookie and localStorage for redundancy
       Cookies.set('token', data.token, { expires: 7 }); // 7 days
+      localStorage.setItem('token', data.token);
+      console.log('Token stored in cookie:', Cookies.get('token'));
+      console.log('Token stored in localStorage:', localStorage.getItem('token'));
       
       // Set user data
       set({ 
@@ -53,6 +80,7 @@ const useAuth = create((set, get) => ({
       // After signup, automatically login
       if (data.token) {
         Cookies.set('token', data.token, { expires: 7 });
+        localStorage.setItem('token', data.token);
         set({ 
           user: data.user, 
           token: data.token, 
@@ -79,6 +107,7 @@ const useAuth = create((set, get) => ({
       console.error('Fetch me error:', error);
       // If fetch fails, clear invalid token
       Cookies.remove('token');
+      localStorage.removeItem('token');
       set({ user: null, token: null });
       return null;
     }
@@ -93,13 +122,14 @@ const useAuth = create((set, get) => ({
     
     // Clear everything
     Cookies.remove('token');
+    localStorage.removeItem('token');
     set({ user: null, token: null });
   },
 
   // Check if user is authenticated
   isAuthenticated: () => {
-    const { user, token } = get();
-    return !!(user && token);
+    const { user, token, initialized } = get();
+    return initialized && !!(user && token);
   },
 
   // Check if user has specific role

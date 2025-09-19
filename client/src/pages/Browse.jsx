@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import ResourceCard from '../components/ResourceCard';
+import useTheme from '../context/themeStore';
 
 export default function Browse(){
+  const { isDarkMode } = useTheme();
   const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [q, setQ] = useState('');
@@ -114,18 +116,18 @@ export default function Browse(){
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-stone-800 mb-2">Browse Library</h1>
-        <p className="text-stone-600">Discover and explore educational resources shared by our community</p>
+        <h1 className={`text-3xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>Browse Library</h1>
+        <p className={isDarkMode ? 'text-gray-300' : 'text-stone-600'}>Discover and explore educational resources shared by our community</p>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-stone-200">
+      <div className={`rounded-xl shadow-lg p-6 mb-8 border ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-stone-200'}`}>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
           {/* Search */}
           <div className="lg:col-span-2">
-            <label className="block text-sm font-medium text-stone-700 mb-2">Search Resources</label>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-300' : 'text-stone-700'}`}>Search Resources</label>
             <input 
-              className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-stone-300 text-gray-900 placeholder-gray-500'}`}
               placeholder="Search titles, descriptions, subjects, tags..."
               value={q} 
               onChange={e => setQ(e.target.value)} 
@@ -134,9 +136,9 @@ export default function Browse(){
 
           {/* Subject Filter */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">Subject</label>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-300' : 'text-stone-700'}`}>Subject</label>
             <select 
-              className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-stone-300 text-gray-900'}`}
               value={selectedSubject}
               onChange={e => setSelectedSubject(e.target.value)}
             >
@@ -149,9 +151,9 @@ export default function Browse(){
 
           {/* Status Filter */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">Status</label>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-300' : 'text-stone-700'}`}>Status</label>
             <select 
-              className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-stone-300 text-gray-900'}`}
               value={selectedStatus}
               onChange={e => setSelectedStatus(e.target.value)}
             >
@@ -166,9 +168,9 @@ export default function Browse(){
         {/* Sort and Clear */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <label className="text-sm font-medium text-stone-700">Sort by:</label>
+            <label className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-stone-700'}`}>Sort by:</label>
             <select 
-              className="px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className={`px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-stone-300 text-gray-900'}`}
               value={sortBy}
               onChange={e => setSortBy(e.target.value)}
             >
@@ -180,7 +182,7 @@ export default function Browse(){
             
             <button
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-              className="px-3 py-2 border border-stone-300 rounded-lg hover:bg-stone-50 transition-colors"
+              className={`px-3 py-2 border rounded-lg transition-colors ${isDarkMode ? 'border-gray-600 hover:bg-gray-700 text-white' : 'border-stone-300 hover:bg-stone-50 text-gray-900'}`}
             >
               {sortOrder === 'asc' ? '↑ Ascending' : '↓ Descending'}
             </button>
@@ -188,7 +190,7 @@ export default function Browse(){
 
           <button
             onClick={clearFilters}
-            className="px-4 py-2 text-stone-600 hover:text-stone-800 font-medium"
+            className={`px-4 py-2 font-medium ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-stone-600 hover:text-stone-800'}`}
           >
             Clear Filters
           </button>
@@ -197,7 +199,7 @@ export default function Browse(){
 
       {/* Results Summary */}
       <div className="mb-6">
-        <p className="text-stone-600">
+        <p className={isDarkMode ? 'text-gray-300' : 'text-stone-600'}>
           Showing <span className="font-medium">{filteredItems.length}</span> of <span className="font-medium">{items.length}</span> resources
           {q && ` matching "${q}"`}
           {selectedSubject && ` in ${selectedSubject}`}
@@ -206,12 +208,12 @@ export default function Browse(){
 
       {/* Resources Grid */}
       {filteredItems.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl shadow border border-stone-200">
+        <div className={`text-center py-16 rounded-xl shadow border ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-stone-200'}`}>
           <svg className="mx-auto h-16 w-16 text-stone-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <h3 className="text-lg font-medium text-stone-800 mb-2">No resources found</h3>
-          <p className="text-stone-600 mb-4">Try adjusting your search criteria or filters</p>
+          <h3 className={`text-lg font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>No resources found</h3>
+          <p className={`mb-4 ${isDarkMode ? 'text-gray-300' : 'text-stone-600'}`}>Try adjusting your search criteria or filters</p>
           <button
             onClick={clearFilters}
             className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"

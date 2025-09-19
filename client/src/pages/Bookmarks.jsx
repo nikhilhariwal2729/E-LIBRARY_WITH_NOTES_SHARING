@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../context/authStore';
+import useTheme from '../context/themeStore';
 import ResourceCard from '../components/ResourceCard';
 
 export default function Bookmarks(){
   const { user } = useAuth();
+  const { isDarkMode } = useTheme();
   const navigate = useNavigate();
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -75,7 +77,7 @@ export default function Bookmarks(){
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-lg text-stone-600">Loading your shelf...</div>
+        <div className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-stone-600'}`}>Loading your shelf...</div>
       </div>
     );
   }
@@ -87,40 +89,40 @@ export default function Bookmarks(){
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-stone-800 mb-2">My Shelf</h1>
-        <p className="text-stone-600">Your personal collection of saved resources</p>
+        <h1 className={`text-3xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>My Shelf</h1>
+        <p className={isDarkMode ? 'text-gray-300' : 'text-stone-600'}>Your personal collection of saved resources</p>
       </div>
 
       {/* Stats and Filters */}
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-stone-200">
+      <div className={`rounded-xl shadow-lg p-6 mb-8 border ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-stone-200'}`}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
           <div className="text-center">
             <div className="text-3xl font-bold text-amber-600">{bookmarks.length}</div>
-            <div className="text-sm text-stone-600">Total Resources</div>
+            <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-stone-600'}`}>Total Resources</div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-stone-600">{subjects.length}</div>
-            <div className="text-sm text-stone-600">Subjects</div>
+            <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-stone-600'}`}>Subjects</div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-stone-600">
               {bookmarks.filter(b => b.resourceId.status === 'approved').length}
             </div>
-            <div className="text-sm text-stone-600">Approved</div>
+            <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-stone-600'}`}>Approved</div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-stone-600">
               {bookmarks.filter(b => b.resourceId.status === 'pending').length}
             </div>
-            <div className="text-sm text-stone-600">Pending</div>
+            <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-stone-600'}`}>Pending</div>
           </div>
         </div>
 
         {/* Filter Controls */}
         <div className="flex flex-wrap items-center gap-4">
-          <label className="text-sm font-medium text-stone-700">Sort by:</label>
+          <label className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-stone-700'}`}>Sort by:</label>
           <select 
-            className="px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+            className={`px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-stone-300 text-gray-900'}`}
             value={filter}
             onChange={e => setFilter(e.target.value)}
           >
@@ -164,17 +166,22 @@ export default function Bookmarks(){
                       <div className="p-6">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                           {subjectBookmarks.map(bookmark => (
-                            <div key={bookmark._id} className="relative">
-                              <ResourceCard r={bookmark.resourceId} />
-                              <button
-                                onClick={() => removeBookmark(bookmark.resourceId._id)}
-                                className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-                                title="Remove from shelf"
-                              >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                              </button>
+                            <div key={bookmark._id} className="relative group">
+                              <div className="relative">
+                                <ResourceCard r={bookmark.resourceId} />
+                                <button
+                                  onClick={() => removeBookmark(bookmark.resourceId._id)}
+                                  className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors z-10"
+                                  title="Remove from shelf"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                  </svg>
+                                </button>
+                              </div>
+                              <div className="mt-2 text-xs text-stone-500 text-center">
+                                Added {new Date(bookmark.createdAt).toLocaleDateString()}
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -191,17 +198,19 @@ export default function Bookmarks(){
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredBookmarks.map(bookmark => (
                 <div key={bookmark._id} className="relative group">
-                  <ResourceCard r={bookmark.resourceId} />
-                  <button
-                    onClick={() => removeBookmark(bookmark.resourceId._id)}
-                    className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all duration-200"
-                    title="Remove from shelf"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                  <div className="absolute bottom-2 left-2 text-xs text-stone-500 bg-white/90 px-2 py-1 rounded">
+                  <div className="relative">
+                    <ResourceCard r={bookmark.resourceId} />
+                    <button
+                      onClick={() => removeBookmark(bookmark.resourceId._id)}
+                      className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all duration-200 z-10"
+                      title="Remove from shelf"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="mt-2 text-xs text-stone-500 text-center">
                     Added {new Date(bookmark.createdAt).toLocaleDateString()}
                   </div>
                 </div>

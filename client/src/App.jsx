@@ -28,8 +28,8 @@ export default function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="admin" element={<Admin />} />
           <Route path="resource/:id" element={<ResourceDetail />} />
+          <Route path="auth" element={<Auth />} />
         </Route>
-        <Route path="/auth" element={<Auth />} />
       </Routes>
     </BrowserRouter>
   );

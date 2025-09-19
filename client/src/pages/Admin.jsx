@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../context/authStore';
+import useTheme from '../context/themeStore';
 
 export default function Admin(){
   const { user } = useAuth();
+  const { isDarkMode } = useTheme();
   const navigate = useNavigate();
   const [pendingResources, setPendingResources] = useState([]);
   const [users, setUsers] = useState([]);
@@ -102,7 +104,7 @@ export default function Admin(){
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-lg text-stone-600">Loading admin panel...</div>
+        <div className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-stone-600'}`}>Loading admin panel...</div>
       </div>
     );
   }
@@ -111,8 +113,8 @@ export default function Admin(){
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-stone-800 mb-2">Admin Panel</h1>
-        <p className="text-stone-600">Manage resources, users, and monitor system activity</p>
+        <h1 className={`text-3xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>Admin Panel</h1>
+        <p className={isDarkMode ? 'text-gray-300' : 'text-stone-600'}>Manage resources, users, and monitor system activity</p>
       </div>
 
       {/* Message Display */}
@@ -128,39 +130,39 @@ export default function Admin(){
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-stone-200">
+        <div className={`rounded-xl shadow-lg p-6 border ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-stone-200'}`}>
           <div className="text-center">
             <div className="text-3xl font-bold text-amber-600">{pendingResources.length}</div>
-            <div className="text-sm text-stone-600">Pending Approvals</div>
+            <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-stone-600'}`}>Pending Approvals</div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-stone-200">
+        <div className={`rounded-xl shadow-lg p-6 border ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-stone-200'}`}>
           <div className="text-center">
             <div className="text-3xl font-bold text-blue-600">{users.length}</div>
-            <div className="text-sm text-stone-600">Total Users</div>
+            <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-stone-600'}`}>Total Users</div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-stone-200">
+        <div className={`rounded-xl shadow-lg p-6 border ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-stone-200'}`}>
           <div className="text-center">
             <div className="text-3xl font-bold text-green-600">
               {users.filter(u => !u.isBlocked).length}
             </div>
-            <div className="text-sm text-stone-600">Active Users</div>
+            <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-stone-600'}`}>Active Users</div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-stone-200">
+        <div className={`rounded-xl shadow-lg p-6 border ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-stone-200'}`}>
           <div className="text-center">
             <div className="text-3xl font-bold text-red-600">
               {users.filter(u => u.isBlocked).length}
             </div>
-            <div className="text-sm text-stone-600">Blocked Users</div>
+            <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-stone-600'}`}>Blocked Users</div>
           </div>
         </div>
       </div>
 
       {/* Tab Navigation */}
-      <div className="bg-white rounded-xl shadow-lg border border-stone-200 overflow-hidden">
-        <div className="border-b border-stone-200">
+      <div className={`rounded-xl shadow-lg border overflow-hidden ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-stone-200'}`}>
+        <div className={`border-b ${isDarkMode ? 'border-gray-700' : 'border-stone-200'}`}>
           <nav className="flex space-x-8 px-6">
             {[
               { id: 'pending', label: 'Pending Approvals', count: pendingResources.length },
@@ -173,12 +175,12 @@ export default function Admin(){
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === tab.id
                     ? 'border-amber-500 text-amber-600'
-                    : 'border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300'
+                    : `border-transparent hover:border-stone-300 ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-stone-500 hover:text-stone-700'}`
                 }`}
               >
                 {tab.label}
                 {tab.count !== null && (
-                  <span className="ml-2 bg-stone-100 text-stone-900 py-0.5 px-2.5 rounded-full text-xs font-medium">
+                  <span className={`ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-stone-100 text-stone-900'}`}>
                     {tab.count}
                   </span>
                 )}
@@ -191,32 +193,32 @@ export default function Admin(){
           {/* Pending Approvals Tab */}
           {activeTab === 'pending' && (
             <div>
-              <h2 className="text-xl font-semibold text-stone-800 mb-4">Resource Approvals</h2>
+              <h2 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>Resource Approvals</h2>
               {pendingResources.length === 0 ? (
                 <div className="text-center py-12">
-                  <svg className="mx-auto h-12 w-12 text-stone-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className={`mx-auto h-12 w-12 mb-4 ${isDarkMode ? 'text-gray-500' : 'text-stone-400'}`} fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <h3 className="text-lg font-medium text-stone-800 mb-2">All caught up!</h3>
-                  <p className="text-stone-600">No resources are waiting for approval.</p>
+                  <h3 className={`text-lg font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>All caught up!</h3>
+                  <p className={isDarkMode ? 'text-gray-300' : 'text-stone-600'}>No resources are waiting for approval.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {pendingResources.map(resource => (
-                    <div key={resource._id} className="bg-stone-50 rounded-lg p-4 border border-stone-200">
+                    <div key={resource._id} className={`rounded-lg p-4 border ${isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-stone-50 border-stone-200'}`}>
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <h3 className="font-semibold text-stone-800 text-lg">{resource.title}</h3>
-                          <p className="text-stone-600 mb-2">{resource.description}</p>
-                          <div className="flex items-center gap-4 text-sm text-stone-500">
-                            <span className="px-2 py-1 bg-stone-200 rounded-full">{resource.subject}</span>
+                          <h3 className={`font-semibold text-lg ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>{resource.title}</h3>
+                          <p className={`mb-2 ${isDarkMode ? 'text-gray-300' : 'text-stone-600'}`}>{resource.description}</p>
+                          <div className={`flex items-center gap-4 text-sm ${isDarkMode ? 'text-gray-400' : 'text-stone-500'}`}>
+                            <span className={`px-2 py-1 rounded-full ${isDarkMode ? 'bg-gray-600 text-gray-300' : 'bg-stone-200 text-stone-800'}`}>{resource.subject}</span>
                             <span>By {resource.uploadedBy?.name} ({resource.uploadedBy?.role})</span>
                             <span>{new Date(resource.createdAt).toLocaleDateString()}</span>
                           </div>
                           {resource.tags && resource.tags.length > 0 && (
                             <div className="flex flex-wrap gap-2 mt-2">
                               {resource.tags.map(tag => (
-                                <span key={tag} className="px-2 py-1 bg-stone-200 text-stone-700 rounded-full text-xs">
+                                <span key={tag} className={`px-2 py-1 rounded-full text-xs ${isDarkMode ? 'bg-gray-600 text-gray-300' : 'bg-stone-200 text-stone-700'}`}>
                                   #{tag}
                                 </span>
                               ))}
